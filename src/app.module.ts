@@ -5,7 +5,11 @@ import { LoggerModule } from './logger/logger.module';
 import { UsersModule } from './users/users.module';
 import { OrderModule } from './order/order.module';
 // 配置
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+// 引入typeorm
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+// 引入user实体
+import { User } from './entities/user/user.entity';
 // 校验环境变量
 import * as Joi from 'joi';
 
@@ -33,7 +37,35 @@ import * as Joi from 'joi';
           .default('development'),
       }),
     }),
-    ConfigModule,
+    // typeorm配置
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: 'localhost',
+    //   port: 3306,
+    //   username: 'root',
+    //   password: 'root',
+    //   database: 'nest-demo',
+    //   // 要加载并用于此数据源的实体或实体模式。
+    //   entities: [],
+    //   synchronize: true, // 指示是否应在每次启动应用程序时自动创建数据库架构。请谨慎使用此选项，不要在生产环境中使用 - 否则可能会丢失生产数据。
+    // }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService): TypeOrmModuleOptions => ({
+        // 配置类型可以使用上面的 Joi 进行校验
+        type: config.get<'mysql' | 'mariadb' | 'postgres' | 'sqlite'>(
+          'DTEST_DB_TYPE',
+        ),
+        host: config.get<string>('DTEST_DB_HOST'),
+        port: config.get<number>('DTEST_DB_PORT'),
+        username: config.get<string>('DTEST_DB_USER'),
+        password: config.get<string>('DTEST_DB_PASSWORD'),
+        database: config.get<string>('DTEST_DB_NAME'),
+        entities: [User],
+        synchronize: config.get<boolean>('DTEST_DB_SYNCHRONIZE'),
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,7 +9,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 // 引入typeorm
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 // 引入user实体
-import { User } from './entities/user/user.entity';
+// import { User } from './entities/user/user.entity';
+// 订单order实体
+// import { Order } from './entities/order/order.entity';
+import { AuthModule } from './auth/auth.module';
 // 校验环境变量
 import * as Joi from 'joi';
 
@@ -62,10 +65,12 @@ import * as Joi from 'joi';
         username: config.get<string>('DTEST_DB_USER'),
         password: config.get<string>('DTEST_DB_PASSWORD'),
         database: config.get<string>('DTEST_DB_NAME'),
-        entities: [User],
+        // entities: [User, Order],
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: config.get<boolean>('DTEST_DB_SYNCHRONIZE'),
       }),
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

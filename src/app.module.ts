@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerModule } from './logger/logger.module';
 import { UsersModule } from './users/users.module';
 import { OrderModule } from './order/order.module';
+import * as path from 'path';
 // 配置
 import { ConfigModule, ConfigService } from '@nestjs/config';
 // 引入typeorm
@@ -15,6 +17,13 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 // 校验环境变量
 import * as Joi from 'joi';
+
+// 全局应用拦截器
+import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
+// 全局异常过滤器
+import { AllExceptionsFilter } from '@/common/filters/all-exceptions.filter';
+// 国际化
+import { I18nModule, I18nJsonLoader } from 'nestjs-i18n';
 
 @Module({
   imports: [
@@ -71,8 +80,30 @@ import * as Joi from 'joi';
       }),
     }),
     AuthModule,
+    I18nModule.forRootAsync({
+      useFactory: (config: ConfigService) => ({
+        fallbackLanguage: config.get<string>('DTEST_APP_LANG'),
+        loaderOptions: {
+          path: path.join(__dirname, '/i18n/'),
+          watch: true,
+        },
+        loader: I18nJsonLoader,
+      }),
+      imports: [ConfigModule],
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {}

@@ -17,6 +17,9 @@ export class UsersService {
   findOne(id: number): Promise<User> {
     return this.userRepository.findOneBy({ id });
   }
+  findOneByUsername(username: string): Promise<User> {
+    return this.userRepository.findOneBy({ username });
+  }
   // 获取配置
   getConfig() {
     const testUser = this.configService.get<string>('DTEST_USER');

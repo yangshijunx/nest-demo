@@ -23,8 +23,10 @@ export class UsersService {
   // 获取配置
   getConfig() {
     const testUser = this.configService.get<string>('DTEST_USER');
+    const lang = this.configService.get<string>('DTEST_APP_LANG');
     return {
       testUser,
+      lang,
     };
   }
 }

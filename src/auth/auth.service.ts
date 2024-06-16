@@ -20,7 +20,8 @@ export class AuthService {
       // console.log(
       //   '测试',
       //   I18nContext.current().lang,
-      //   this.i18n.t('HELLO', { lang: I18nContext.current().lang }),
+      //   // 路径.key
+      //   this.i18n.t('sys.test.HELLO', { lang: I18nContext.current().lang }),
       // );
       throw new UnauthorizedException();
       // 或者自定义异常

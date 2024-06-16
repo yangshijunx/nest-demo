@@ -23,7 +23,13 @@ import { TransformInterceptor } from '@/common/interceptors/transform.intercepto
 // 全局异常过滤器
 import { AllExceptionsFilter } from '@/common/filters/all-exceptions.filter';
 // 国际化
-import { I18nModule, I18nJsonLoader } from 'nestjs-i18n';
+import {
+  I18nModule,
+  I18nJsonLoader,
+  HeaderResolver,
+  AcceptLanguageResolver,
+  QueryResolver,
+} from 'nestjs-i18n';
 
 @Module({
   imports: [
@@ -89,6 +95,11 @@ import { I18nModule, I18nJsonLoader } from 'nestjs-i18n';
         },
         loader: I18nJsonLoader,
       }),
+      resolvers: [
+        new HeaderResolver(['x-language']), // 从自定义头 `X-Language` 中解析语言
+        { use: QueryResolver, options: ['language'] }, // 从查询参数 `lang` 中解析语言
+        AcceptLanguageResolver, // 从 `Accept-Language` 头中解析语言
+      ],
       imports: [ConfigModule],
       inject: [ConfigService],
     }),

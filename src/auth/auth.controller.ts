@@ -1,5 +1,14 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { AuthGuard } from './jwt-auth.guard';
 
 interface SigninDto {
   username: string;
@@ -13,5 +22,13 @@ export class AuthController {
   @Post('login')
   login(@Body() signinDto: SigninDto) {
     return this.authService.sinIn(signinDto.username, signinDto.password);
+  }
+
+  // @UseGuards(AuthGuard)
+  @Get('profile')
+  getProfile() {
+    return {
+      user: 'test',
+    };
   }
 }

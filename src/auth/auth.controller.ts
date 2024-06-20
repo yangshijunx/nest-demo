@@ -24,7 +24,7 @@ export class AuthController {
     return this.authService.sinIn(signinDto.username, signinDto.password);
   }
 
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Get('profile')
   getProfile() {
     return {

@@ -8,6 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     UsersModule,
+    // 因为 JwtModule 需要使用 ConfigService，所以需要将其导入到模块中
+    ConfigModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('DTEST_APP_SERCET'),

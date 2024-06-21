@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerModule } from './logger/logger.module';
@@ -22,6 +22,10 @@ import * as Joi from 'joi';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
 // 全局异常过滤器
 import { AllExceptionsFilter } from '@/common/filters/all-exceptions.filter';
+
+// jwt校验
+import { AuthGuard } from '@/auth/jwt-auth.guard';
+import { JwtModule } from '@nestjs/jwt';
 // 国际化
 import {
   I18nModule,
@@ -86,6 +90,7 @@ import {
       }),
     }),
     AuthModule,
+    JwtModule,
     I18nModule.forRootAsync({
       useFactory: (config: ConfigService) => ({
         fallbackLanguage: config.get<string>('DTEST_APP_LANG'),
@@ -114,6 +119,11 @@ import {
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    // 全局校验
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
 })

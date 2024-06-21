@@ -4,6 +4,7 @@ import { UsersService } from '@/users/users.service';
 // import { MyCustomHttpException } from '@/common/exceptions/my-custom-http.exception';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@/entities/user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,16 +14,37 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async sinIn(username: string, password: string) {
+  // 校验登录用户
+  async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByUsername(username);
+    console.log('获取不到？', user);
+    if (user && user.password === password) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
+
+  // 登录
+  async login(user: User) {
+    const payload = { username: user.username, sub: user.id };
+    return {
+      access_token: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }), // 可根据需求设置刷新令牌的过期时间
+    };
+  }
+
+  async sinIn(username: string, password: string) {
+    const user = await this.validateUser(username, password);
 
     // 这里应该进行密码验证
-    if (user && user.password === password) {
+    if (user) {
       // 生成token
-      const payload = { username, sub: user.id };
+      // const payload = { username, sub: user.id };
+      // const token = this.login(payload);
       return {
         ...user,
-        access_token: this.jwtService.sign(payload),
       };
       // return user;
     } else {

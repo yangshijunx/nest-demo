@@ -1,0 +1,19 @@
+// vscode nest项目调试
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch NestJS",
+      "runtimeArgs": [
+        "--nolazy",
+        "-r",
+        "ts-node/register"
+      ],
+      "args": [
+        "${workspaceFolder}/dist/main.js"
+      ],
+      "cwd": "${workspaceFolder}"
+    }
+  ]

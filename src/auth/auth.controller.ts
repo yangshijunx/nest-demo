@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { UsersService } from '@/users/users.service';
 import { AuthGuard } from './jwt-auth.guard';
 
 interface SigninDto {
@@ -16,12 +17,30 @@ interface SigninDto {
 }
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() signinDto: SigninDto) {
-    return this.authService.sinIn(signinDto.username, signinDto.password);
+  async login(@Body() signinDto: SigninDto) {
+    const user = await this.authService.sinIn(
+      signinDto.username,
+      signinDto.password,
+    );
+    if (user) {
+      const permissions = await this.userService.getUserPermissions(user);
+      const role = user.roles[0];
+      const { access_token, refreshToken } = await this.authService.login(user);
+      return {
+        user,
+        permissions,
+        role,
+        access_token,
+        refreshToken,
+      };
+    }
   }
 
   @UseGuards(AuthGuard)

@@ -10,6 +10,7 @@ import {
 import { AuthService } from './auth.service';
 import { UsersService } from '@/users/users.service';
 import { AuthGuard } from './jwt-auth.guard';
+import { SkipAuth } from '@/common/skipAuth';
 
 interface SigninDto {
   username: string;
@@ -22,6 +23,7 @@ export class AuthController {
     private readonly userService: UsersService,
   ) {}
 
+  @SkipAuth()
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() signinDto: SigninDto) {
@@ -30,7 +32,9 @@ export class AuthController {
       signinDto.password,
     );
     if (user) {
+      console.log('校验通过1', user);
       const permissions = await this.userService.getUserPermissions(user);
+      console.log('校验通过', permissions);
       const role = user.roles[0];
       const { access_token, refreshToken } = await this.authService.login(user);
       return {

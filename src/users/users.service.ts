@@ -28,7 +28,9 @@ export class UsersService {
   }
   // 获取用户权限
   async getUserPermissions(user: User): Promise<Permission[]> {
+    console.log('进入逻辑', user);
     const permissions = user.roles.flatMap((role) => role.permissions);
+    console.log('permissions', permissions);
     return permissions;
   }
   // 获取配置

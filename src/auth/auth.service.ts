@@ -17,7 +17,6 @@ export class AuthService {
   // 校验登录用户
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByUsername(username);
-    console.log('获取不到？', user);
     if (user && user.password === password) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;

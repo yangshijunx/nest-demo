@@ -1,12 +1,12 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
-  ManyToMany,
+  Column,
   ManyToOne,
   OneToMany,
+  ManyToMany,
 } from 'typeorm';
-import { Role } from '../role/role.entity';
+import { Role } from '@/entities/role/role.entity';
 
 @Entity()
 export class Permission {
@@ -14,7 +14,7 @@ export class Permission {
   id: string;
 
   @Column({ nullable: true })
-  parent_id: string;
+  parentId: string;
 
   @Column()
   label: string;
@@ -22,7 +22,7 @@ export class Permission {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   icon: string;
 
   @Column()
@@ -31,23 +31,14 @@ export class Permission {
   @Column()
   route: string;
 
-  @Column()
-  order: number;
-
   @Column({ nullable: true })
   component: string;
 
-  @Column({ nullable: true })
-  frame_src: string;
+  @Column({ default: 0 })
+  order: number;
 
-  @Column({ nullable: true })
-  hide_tab: boolean;
-
-  @Column({ nullable: true })
-  new_feature: boolean;
-
-  @Column({ default: 1 })
-  status: number;
+  @Column({ default: false })
+  hide: boolean;
 
   @ManyToOne(() => Permission, (permission) => permission.children)
   parent: Permission;

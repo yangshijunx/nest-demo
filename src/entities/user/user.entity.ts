@@ -12,17 +12,17 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   username: string;
 
-  @Column({ unique: true })
+  @Column()
   email: string;
+
+  @Column({ nullable: true })
+  avatar: string;
 
   @Column()
   password: string;
-
-  @Column()
-  avatar: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -37,8 +37,8 @@ export class User {
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({
     name: 'user_roles',
-    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
+    joinColumn: { name: 'user_id' },
+    inverseJoinColumn: { name: 'role_id' },
   })
   roles: Role[];
 }

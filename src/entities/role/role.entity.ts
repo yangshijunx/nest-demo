@@ -1,12 +1,12 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
+  Column,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { User } from '../user/user.entity';
-import { Permission } from '../permission/permission.entity';
+import { User } from '@/entities/user/user.entity';
+import { Permission } from '@/entities/permission/permission.entity';
 
 @Entity()
 export class Role {
@@ -19,23 +19,23 @@ export class Role {
   @Column()
   label: string;
 
-  @Column()
+  @Column({ default: 1 })
   status: number;
 
-  @Column()
+  @Column({ default: 0 })
   order: number;
 
-  @Column('text')
+  @Column({ nullable: true })
   desc: string;
 
-  @ManyToMany(() => User, (users) => users.roles)
+  @ManyToMany(() => User, (user) => user.roles)
   users: User[];
 
   @ManyToMany(() => Permission, (permission) => permission.roles)
   @JoinTable({
     name: 'role_permissions',
-    joinColumn: { name: 'role_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' },
+    joinColumn: { name: 'role_id' },
+    inverseJoinColumn: { name: 'permission_id' },
   })
   permissions: Permission[];
 }

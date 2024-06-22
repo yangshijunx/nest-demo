@@ -33,13 +33,14 @@ export class AuthController {
     );
     if (user) {
       const permissions = await this.userService.getUserPermissions(user);
-      const role = user.roles[0];
-      const { access_token, refreshToken } = await this.authService.login(user);
+      // const role = user.roles[0];
+      const { accessToken, refreshToken } = await this.authService.login(user);
+      user.permissions = permissions;
       return {
         user,
-        permissions,
-        role,
-        access_token,
+        // permissions,
+        // role,
+        accessToken,
         refreshToken,
       };
     }

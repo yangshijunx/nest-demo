@@ -35,27 +35,28 @@ export class UsersService {
     // console.log('进入逻辑', user);
     const permissions = user.roles.flatMap((role) => role.permissions);
     return this.buildPermissionTree(permissions);
+    // return permissions;
   }
 
   // 获取用户权限树
   private buildPermissionTree(permissions: Permission[]): Permission[] {
-    const permissionMap: { [key: number]: Permission } = {};
+    const permissionMap = {};
+    const tree = [];
 
-    // 将每个权限项存储到一个Map中
+    // 初始化每个权限对象并创建一个映射
     permissions.forEach((permission) => {
       permission.children = [];
       permissionMap[permission.id] = permission;
     });
 
-    const tree: Permission[] = [];
-
-    // 构建树形结构
+    // 构建树结构
     permissions.forEach((permission) => {
       if (permission.parentId === null) {
         tree.push(permission);
       } else {
-        if (permissionMap[permission.parentId]) {
-          permissionMap[permission.parentId].children!.push(permission);
+        const parent = permissionMap[permission.parentId];
+        if (parent) {
+          parent.children.push(permission);
         }
       }
     });

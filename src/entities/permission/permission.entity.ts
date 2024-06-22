@@ -48,6 +48,10 @@ export class Permission {
   @Column({ nullable: true })
   frameSrc: string;
 
+  // newFeature 布尔值字段 默认为 false
+  @Column({ default: false })
+  newFeature: boolean;
+
   @ManyToOne(() => Permission, (permission) => permission.children)
   parent: Permission;
 

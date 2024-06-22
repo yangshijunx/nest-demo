@@ -29,7 +29,7 @@ export class AuthService {
   async login(user: User) {
     const payload = { username: user.username, sub: user.id };
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }), // 可根据需求设置刷新令牌的过期时间
     };
   }

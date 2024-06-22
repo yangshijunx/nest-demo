@@ -25,16 +25,14 @@ export class AuthController {
 
   @SkipAuth()
   @HttpCode(HttpStatus.OK)
-  @Post('login')
+  @Post('signin')
   async login(@Body() signinDto: SigninDto) {
     const user = await this.authService.sinIn(
       signinDto.username,
       signinDto.password,
     );
     if (user) {
-      console.log('校验通过1', user);
       const permissions = await this.userService.getUserPermissions(user);
-      console.log('校验通过', permissions);
       const role = user.roles[0];
       const { access_token, refreshToken } = await this.authService.login(user);
       return {

@@ -24,14 +24,43 @@ export class UsersService {
     return this.userRepository.findOneBy({ id });
   }
   findOneByUsername(username: string): Promise<User> {
-    return this.userRepository.findOneBy({ username });
+    return this.userRepository.findOne({
+      where: { username },
+      relations: ['roles', 'roles.permissions'],
+      // relations: ['roles'],
+    });
   }
   // 获取用户权限
   async getUserPermissions(user: User): Promise<Permission[]> {
-    console.log('进入逻辑', user);
+    // console.log('进入逻辑', user);
     const permissions = user.roles.flatMap((role) => role.permissions);
-    console.log('permissions', permissions);
-    return permissions;
+    return this.buildPermissionTree(permissions);
+  }
+
+  // 获取用户权限树
+  private buildPermissionTree(permissions: Permission[]): Permission[] {
+    const permissionMap: { [key: number]: Permission } = {};
+
+    // 将每个权限项存储到一个Map中
+    permissions.forEach((permission) => {
+      permission.children = [];
+      permissionMap[permission.id] = permission;
+    });
+
+    const tree: Permission[] = [];
+
+    // 构建树形结构
+    permissions.forEach((permission) => {
+      if (permission.parentId === null) {
+        tree.push(permission);
+      } else {
+        if (permissionMap[permission.parentId]) {
+          permissionMap[permission.parentId].children!.push(permission);
+        }
+      }
+    });
+
+    return tree;
   }
   // 获取配置
   getConfig() {

@@ -1,3 +1,4 @@
+// 跳过接口jwt鉴权
 import { SetMetadata } from '@nestjs/common';
 
 export const IS_PUBLIC_KEY = 'isPublic';

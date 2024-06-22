@@ -10,8 +10,8 @@ import { Role } from '@/entities/role/role.entity';
 
 @Entity()
 export class Permission {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ nullable: true })
   parentId: string;
@@ -39,6 +39,14 @@ export class Permission {
 
   @Column({ default: false })
   hide: boolean;
+
+  // hideTab字段布尔值默认 false
+  @Column({ default: false })
+  hideTab: boolean;
+
+  // frameSrc 字符串字段 默认为空
+  @Column({ nullable: true })
+  frameSrc: string;
 
   @ManyToOne(() => Permission, (permission) => permission.children)
   parent: Permission;

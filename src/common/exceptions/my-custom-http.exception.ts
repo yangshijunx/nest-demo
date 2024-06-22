@@ -1,5 +1,5 @@
 // src/common/exceptions/my-custom.exception.ts
-
+// 自定义HTTP异常类
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 export class MyCustomHttpException extends HttpException {

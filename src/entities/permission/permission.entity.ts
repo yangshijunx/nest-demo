@@ -52,6 +52,11 @@ export class Permission {
   @Column({ default: false })
   newFeature: boolean;
 
+  // status 0 1 默认是1
+  // 0 禁用
+  @Column({ default: 1 })
+  status: number;
+
   @ManyToOne(() => Permission, (permission) => permission.children)
   parent: Permission;
 

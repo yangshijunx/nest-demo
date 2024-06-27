@@ -8,6 +8,7 @@ export class OrganizationController {
   //   获取所有的组织
   @Get('/allorg')
   getAllOrganization() {
-    return this.organizationService.getAllOrganizations();
+    const data = this.organizationService.getAllOrganizations();
+    return data;
   }
 }

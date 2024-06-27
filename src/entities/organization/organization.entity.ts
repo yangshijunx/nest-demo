@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
+import { Expose } from 'class-transformer';
 
 @Entity()
 export class Organization {
@@ -34,11 +36,22 @@ export class Organization {
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   updateTime: Date;
 
+  // 父级id
+  @Column({ nullable: true })
+  parentId: number;
+
   @ManyToOne(() => Organization, (organization) => organization.children)
+  @JoinColumn({ name: 'parentId' })
   parent: Organization;
 
   @OneToMany(() => Organization, (organization) => organization.parent)
   children: Organization[];
+
+  // Getter method for statusLabel
+  @Expose()
+  get statusLabel(): string {
+    return this.status ? 'enable' : 'disable';
+  }
 
   //   @OneToMany(() => User, (user) => user.organization)
   //   users: User[];

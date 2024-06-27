@@ -6,7 +6,7 @@ export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
   //   获取所有的组织
-  @Get('/get/allorg')
+  @Get('/allorg')
   getAllOrganization() {
     return this.organizationService.getAllOrganizations();
   }

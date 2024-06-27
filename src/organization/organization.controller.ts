@@ -1,4 +1,13 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { OrganizationService } from './organization.service';
 
 @Controller('organization')
-export class OrganizationController {}
+export class OrganizationController {
+  constructor(private readonly organizationService: OrganizationService) {}
+
+  //   获取所有的组织
+  @Get('/get/allorg')
+  getAllOrganization() {
+    return this.organizationService.getAllOrganizations();
+  }
+}

@@ -34,6 +34,7 @@ import {
   AcceptLanguageResolver,
   QueryResolver,
 } from 'nestjs-i18n';
+import { OrganizationModule } from './organization/organization.module';
 
 @Module({
   imports: [
@@ -108,6 +109,7 @@ import {
       imports: [ConfigModule],
       inject: [ConfigService],
     }),
+    OrganizationModule,
   ],
   controllers: [AppController],
   providers: [
